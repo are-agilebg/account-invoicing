@@ -84,7 +84,6 @@ class LineTripleDiscount (models.AbstractModel):
         # more digits than allowed from field's precision,
         # so let's increase it just for saving it correctly in cache
         discount_field = self._fields['discount']
-        discount_original_digits = discount_field._digits
         discount_field._digits = (16, 10)
 
         for line in self:
@@ -100,7 +99,7 @@ class LineTripleDiscount (models.AbstractModel):
             })
 
         # Restore discount field's precision
-        discount_field._digits = discount_original_digits
+        discount_field._digits = dp.get_precision("Discount")(self.env.cr)
         return prev_values
 
     @api.model
